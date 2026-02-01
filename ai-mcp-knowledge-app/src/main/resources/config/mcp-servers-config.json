@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@2025.3.28",
+        "/Users/liubo/Desktop",
+        "/Users/liubo/Desktop"
+      ]
+    },
+    "mcp-server-computer": {
+      "command": "java",
+      "args": [
+        "-Dspring.ai.mcp.server.stdio=true",
+        "-jar",
+        "/Users/liubo/develop/maven/maven-repository/cn/bugstack/mcp/mcp-server-computer/1.0.0/mcp-server-computer-1.0.0.jar"
+      ]
+    }
+  }
+}
+
