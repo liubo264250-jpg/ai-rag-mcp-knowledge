@@ -2,15 +2,13 @@ version: '3.8'
 # docker-compose -f docker-compose-app-v1.0.yml up -d
 services:
   ai-mcp-knowledge-app:
-    image: liubo68/ai-mcp-knowledge-app
+    image: liubo68/ai-mcp-knowledge-app:1.0
     container_name: ai-mcp-knowledge-app
     restart: on-failure
     ports:
       - "8090:8090"
     volumes:
       - ./log:/data/log
-      - ./mcp/config:/mcp/config
-      - ./mcp/jar:/mcp/jar
     environment:
       - TZ=PRC
       - SERVER_PORT=8090
@@ -25,7 +23,8 @@ services:
       - SPRING_AI_OPENAI_API_KEY=sk-a7FBiXQhRBu46R8C44Fa7c5f8340471cB03978A4C01f5a38
       - SPRING_AI_OPENAI_EMBEDDING_MODEL=text-embedding-ada-002
       - SPRING_AI_RAG_EMBED=nomic-embed-text
-      - SPRING_AI_MCP_CLIENT_STDIO_SERVERS_CONFIGURATION=file:/mcp/config/mcp-servers-config.json
+      - SPRING_AI_MCP_CLIENT_REQUEST_TIMEOUT=360s
+      - SPRING_AI_MCP_CLIENT_SSE_CONNECTIONS_MCP_SERVER_CSDN_URL=http://mcp-server-csdn:8091
       - REDIS_SDK_CONFIG_HOST=redis
       - REDIS_SDK_CONFIG_PORT=6379
     logging:
@@ -35,6 +34,29 @@ services:
         max-file: "3"
     networks:
       - my-network
+
+  mcp-server-csdn:
+    #    image: fuzhengwei/mcp-server-csdn-app:1.1
+    image: liubo68/mcp-server-csdn:1.0
+    container_name: mcp-server-csdn
+    restart: on-failure
+    ports:
+      - "8091:8091"
+    volumes:
+      - ./log:/data/log
+    environment:
+      - TZ=PRC
+      - SERVER_PORT=8091
+      - CSDN_API_CATEGORIES=Java场景面试宝典
+      - CSDN_API_COOKIE=uuid_tt_dd=10_19725804560-1756390296664-495550; fid=20_86280759874-1756390297590-610613; p_uid=U010000; csdn_newcert_weixin_53060535=1; c_ab_test=1; _ga_JJBD2VG1H7=GS2.1.s1768700912$o2$g0$t1768700912$j60$l0$h0; c_adb=1; loginbox_strategy=%7B%22taskId%22%3A317%2C%22abCheckTime%22%3A1770077078345%2C%22version%22%3A%22ExpA%22%2C%22nickName%22%3A%22JustMove0n%22%7D; tfstk=gqzrfnZT_22btJ6g_50F79otgk3-l2W_EyMItWVnNYDoRgHnKWexOeNhevcU3xiQVvgoKwyghzxSF_n3YJw4VJPdwXD3KJkQVi__w73K-OwF5NN-Gw00E88ntEfntfdlG02wL67i-O61lnOm2Tg3N_93-SVmHXlHxD2nnEDx1b0nEDvDmfDmK22nqqAm1fLnKe0nislKnv0n-JVcgXMmK203KScZociFQXilZuAYb3Cv30DgZx8H7Cn-qGPXAEY0bbozg7D4a7zqa0kiYtADTPPgZPhUJ1xEL5EuFjeF7tu0z8zo027ek4Nam8o4498qDoVT-mrAQhFTZ8rijzbVimz814D4J6LKEuN3RDzlIBMuy8aqXypPhvZ_Gzm4ItT4pDruj44FQZjzrphcFszL4pxEqjhqCs5VtYJ2we8lc0xpv0prgA1uxHKKqmlqCs52vHn8hjk1Zkf..; csdn_newcert_ggost214=1; UserName=weixin_53060535; UserInfo=2bd125ae4a6345978dc4cba1a135a2ae; UserToken=2bd125ae4a6345978dc4cba1a135a2ae; UserNick=JustMove0n; AU=205; UN=weixin_53060535; BT=1770078448028; dc_sid=7ad8587b6f358178ed36092d9a7d33e8; SESSION=5d1b8199-d144-4d25-9846-0a23172b9823; c_segment=14; Hm_lvt_6bcd52f51e9b3dce32bec4a3997715ac=1768700912,1769646608,1770076371,1770475181; HMACCOUNT=7E4B0154A7D01166; creative_btn_mp=3; c_utm_source=cknow_so_nontop_query; historyList-new=%5B%5D; c_first_ref=www.google.com; _gid=GA1.2.48432398.1770513051; _clck=3gslzm%5E2%5Eg3e%5E0%5E2066; c_first_page=https%3A//blog.csdn.net/yu102655/article/details/112490962; _ga=GA1.1.653135710.1756390298; _ga_7W1N0GEY1P=GS2.1.s1770524815$o38$g1$t1770525505$j45$l0$h0; dc_session_id=10_1770541292105.638637; c_dsid=11_1770541293582.093899; c-sidebar-collapse=0; c_utm_medium=distribute.pc_search_hot_word.none-task-hot_word-landing-9-mybatisx%E6%97%A0%E6%B3%95%E7%94%9F%E6%88%90%E5%AE%9E%E4%BD%93%E7%B1%BB-null-null.172%5Ev8%5Econtrol; utm_source=cknow_so_nontop_query; fe_request_id=1770541714280_1097_3981261; c_pref=https%3A//www.csdn.net/; c_ref=https%3A//so.csdn.net/so/search%3Fspm%3D1000.2115.3001.7499%26q%3Dmybatisx%25E6%2597%25A0%25E6%25B3%2595%25E7%2594%259F%25E6%2588%2590%25E5%25AE%259E%25E4%25BD%2593%25E7%25B1%25BB%26t%3D%26u%3D%26utm_medium%3Ddistribute.pc_search_hot_word.none-task-hot_word-landing-9-mybatisx%25E6%2597%25A0%25E6%25B3%2595%25E7%2594%259F%25E6%2588%2590%25E5%25AE%259E%25E4%25BD%2593%25E7%25B1%25BB-null-null.172%255Ev8%255Econtrol%26depth_1-utm_source%3Ddistribute.pc_search_hot_word.none-task-hot_word-landing-9-mybatisx%25E6%2597%25A0%25E6%25B3%2595%25E7%2594%259F%25E6%2588%2590%25E5%25AE%259E%25E4%25BD%2593%25E7%25B1%25BB-null-null.172%255Ev8%255Econtrol; log_Id_click=8; Hm_lpvt_6bcd52f51e9b3dce32bec4a3997715ac=1770541754; _clsk=6vdnsm%5E1770541754760%5E2%5E0%5El.clarity.ms%2Fcollect; c_page_id=default; dc_tos=ta4uro; log_Id_pv=11; log_Id_view=255
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - my-network
+
 
 networks:
   my-network:

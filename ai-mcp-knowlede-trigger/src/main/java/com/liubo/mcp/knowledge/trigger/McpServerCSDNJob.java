@@ -32,7 +32,7 @@ public class McpServerCSDNJob {
     }
 
 
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 */2 * * * ?")
     public void execute() {
         log.info("McpServerCSDNJob start,当前时间: {}, 时区: {} ", LocalDateTime.now(), ZoneId.systemDefault());
         // 检查当前时间是否在允许执行的时间范围内（8点到23点之间）
