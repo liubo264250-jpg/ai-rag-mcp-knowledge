@@ -32,4 +32,8 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>ai-mcp-knowlede-trigger</finalName>
+    </build>
+
 </project>

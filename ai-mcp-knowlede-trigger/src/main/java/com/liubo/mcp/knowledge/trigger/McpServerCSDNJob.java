@@ -1,10 +1,14 @@
 package com.liubo.mcp.knowledge.trigger;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * @author 68
@@ -17,8 +21,20 @@ public class McpServerCSDNJob {
     @Autowired
     private ChatClient chatClient;
 
-    @Scheduled(cron = "0 5 11 * * ?")
+    public McpServerCSDNJob() {
+        System.out.println("=== McpServerCSDNJob 构造函数执行 ===");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("=== McpServerCSDNJob @PostConstruct 执行 ===");
+        System.out.println("当前时间: " + LocalDateTime.now());
+    }
+
+
+    @Scheduled(cron = "0 */5 * * * ?")
     public void execute() {
+        log.info("McpServerCSDNJob start,当前时间: {}, 时区: {} ", LocalDateTime.now(), ZoneId.systemDefault());
         // 检查当前时间是否在允许执行的时间范围内（8点到23点之间）
         int currentHour = java.time.LocalDateTime.now().getHour();
         if (currentHour >= 23 || currentHour < 8) {

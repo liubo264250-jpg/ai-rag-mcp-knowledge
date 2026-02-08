@@ -78,10 +78,10 @@
         <dependency>
             <groupId>com.liubo</groupId>
             <artifactId>ai-mcp-knowlede-trigger</artifactId>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>
-
 
     <build>
         <finalName>ai-mcp-knowledge-app</finalName>
@@ -119,10 +119,18 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.4.3</version>
                 <configuration>
                     <mainClass>com.liubo.mcp.knowledge.Application</mainClass>
                     <layout>JAR</layout>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>  <!-- 在package阶段执行 -->
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
