@@ -1,79 +1,30 @@
-package com.liubo.mcp.knowledge;
+package com.liubo.mcp.knowledge.trigger;
 
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 68
- * 2026/2/1 20:30
+ * 2026/2/4 09:37
  */
 @Slf4j
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class MCPTest {
-
-    @Resource
-    private ChatClient.Builder chatClientBuilder;
-
-    @Autowired
-    private ToolCallbackProvider tools;
+@Service
+public class McpServerCSDNJob {
 
     @Autowired
     private ChatClient chatClient;
 
-    @Test
-    public void test_tool() {
-        String userInput = "有哪些工具可以使用";
-        ChatClient chatClient = chatClientBuilder
-                .defaultTools(tools)
-                .defaultOptions(OpenAiChatOptions.builder()
-                        .model("gpt-4o")
-                        .build())
-                .build();
-        System.out.println("\n>>> QUESTION: " + userInput);
-        System.out.println("\n>>> ASSISTANT: " + chatClient.prompt(userInput).call().content());
-    }
-
-    @Test
-    public void test_workflow() {
-        String userInput = "获取电脑配置";
-        userInput = "在 /Users/liubo/Desktop 文件夹下，创建 电脑.txt";
-
-        var chatClient = chatClientBuilder
-                .defaultTools(tools)
-                .defaultOptions(OpenAiChatOptions.builder()
-                        .model("gpt-4o")
-                        .build())
-                .build();
-
-        System.out.println("\n>>> QUESTION: " + userInput);
-        System.out.println("\n>>> ASSISTANT: " + chatClient.prompt(userInput).call().content());
-    }
-
-    @Test
-    public void test() {
-        String userInput = "获取电脑配置";
-        userInput = "获取电脑配置 在 /Users/liubo/Desktop 文件夹下，创建 电脑.txt 把电脑配置写入 电脑.txt";
-        var chatClient = chatClientBuilder
-                .defaultTools(tools)
-                .defaultOptions(OpenAiChatOptions.builder()
-                        .model("gpt-4o")
-                        .build())
-                .build();
-        System.out.println("\n>>> QUESTION: " + userInput);
-        System.out.println("\n>>> ASSISTANT: " + chatClient.prompt(userInput).call().content());
-    }
-
-    @Test
-    public void csdn_test() {
+    @Scheduled(cron = "0 5 11 * * ?")
+    public void execute() {
+        // 检查当前时间是否在允许执行的时间范围内（8点到23点之间）
+        int currentHour = java.time.LocalDateTime.now().getHour();
+        if (currentHour >= 23 || currentHour < 8) {
+            log.info("当前时间 {}点 不在任务执行时间范围内，跳过执行", currentHour);
+            return;
+        }
         String userInput = """
                 我需要你帮我生成一篇文章，要求如下；
                 

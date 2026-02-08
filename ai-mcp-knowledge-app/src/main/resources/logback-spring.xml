@@ -106,7 +106,7 @@
 
     <!-- ✅ 开发环境：只输出到控制台 -->
     <springProfile name="dev">
-        <logger name="com.liubo.rag" level="debug"/>
+        <logger name="com.liubo.mcp" level="debug"/>
         <root level="info">
             <appender-ref ref="CONSOLE"/>
         </root>

@@ -5,8 +5,10 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.DefaultChatClientBuilder;
 import org.springframework.ai.chat.client.observation.ChatClientObservationConvention;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,5 +53,17 @@ public class OpenAiConfig {
     @Bean("chatClientBuilder")
     public ChatClient.Builder chatClientBuilder(OpenAiChatModel openAiChatModel) {
         return new DefaultChatClientBuilder(openAiChatModel, ObservationRegistry.NOOP, (ChatClientObservationConvention) null);
+    }
+
+    @Bean
+    public ChatClient chatClient(OpenAiChatModel openAiChatModel, ToolCallbackProvider tools) {
+        ChatClient chatClient = new DefaultChatClientBuilder(openAiChatModel, ObservationRegistry.NOOP, (ChatClientObservationConvention) null)
+                .defaultTools(tools)
+                .defaultOptions(OpenAiChatOptions
+                        .builder()
+                        .model("gpt-4o")
+                        .build()).
+                build();
+        return chatClient;
     }
 }
